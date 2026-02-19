@@ -1,6 +1,8 @@
 # Environment variables
 .env
 *.env
+.env.local
+.env.*.local
 
 # IDEs and editors
 .idea
@@ -19,7 +21,26 @@ npm-debug.log
 __pycache__/
 *.py[cod]
 *$py.class
+truck-backend/env/
+
+# Django
+*.djcache
 
 # Build outputs
 dist/
 build/
+
+# Firebase
+# Logs and user-specific cache. Contains sensitive info.
+.firebase/
+firebase-debug.log
+
+# Unused project directories
+functions/
+hos-planner/
+
+# Project metadata / reference files
+assignment.txt
+fmcsa-hos.md
+fmcsa-hos.txt
+log.png

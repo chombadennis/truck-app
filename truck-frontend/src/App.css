@@ -1,24 +1,118 @@
-.App {
-  text-align: center;
-  font-family: "Inter", Arial, sans-serif;
-  background: #f4f6f8;
+/* === Final Branded Light Theme v9 === */
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #212529;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  background-image: radial-gradient(ellipse at top, #f0e6d2, #f8f9fa 70%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
+.App {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* === HEADER === */
 .App-header {
-  background: linear-gradient(135deg, #1f3c88, #2d6cdf);
-  color: white;
-  padding: 40px 20px;
-  border-radius: 0 0 12px 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background: #1a202c;
+  padding: 20px;
+  border-bottom: 2px solid #38A169;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  margin-bottom: 32px;
+  border-radius: 8px;
+  text-align: center;
 }
 
 .App-header h1 {
   margin: 0;
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: 2.0rem;
+  font-weight: 600;
+  color: #48BB78;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 
-.App-link {
-  color: #61dafb;
-  text-decoration: none;
+/* === CARDS === */
+.content-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  padding: 24px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  border: 1px solid #e6c364;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.content-card:hover {
+  transform: translateY(-5px);
+  border-color: #ffd700;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12), 0 0 15px rgba(255, 215, 0, 0.6);
+}
+
+/* === FINAL CARD TITLES: CENTERED, GOLD, UNDERLINED === */
+.section-header {
+  color: #c7a868; /* Rich gold color */
+  text-align: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e6c364; /* Gold underline */
+  font-size: 1.5rem; /* Slightly larger for prominence */
+  font-weight: 600;
+}
+
+/* === FORM ELEMENTS === */
+input[type="text"],
+input[type="number"],
+input[type="datetime-local"],
+textarea {
+  background-color: #f1f3f5 !important;
+  color: #212929 !important;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  padding: 12px;
+  margin: 5px 0;
+  font-size: 1rem;
+  width: calc(100% - 26px);
+}
+
+input:focus, textarea:focus {
+    border-color: #48BB78;
+    box-shadow: 0 0 0 2px rgba(72, 187, 120, 0.3);
+    outline: none;
+}
+
+::placeholder {
+  color: #6c757d !important;
+  opacity: 1;
+}
+
+/* === BUTTONS & LINKS === */
+button {
+  background-color: #38A169;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+button:hover {
+  background-color: #48BB78;
+  transform: translateY(-1px);
+}
+
+button:disabled {
+    background-color: #e9ecef;
+    color: #6c757d;
+    cursor: not-allowed;
+    transform: none;
 }

@@ -142,7 +142,8 @@ def reverse_geocode(lng: float, lat: float) -> str:
     key = (int(round(lat * 1000)), int(round(lng * 1000)))
     if key in _geocode_cache:
         return _geocode_cache[key]
-    cached = cache.get(str(key))
+    cache_key = f'geocode:{key[0]}:{key[1]}'.replace(" ", "")
+    cached = cache.get(cache_key)
     if cached:
         _geocode_cache[key] = cached
         return cached
@@ -166,7 +167,7 @@ def reverse_geocode(lng: float, lat: float) -> str:
         else:
             result = data.get("display_name", f"{lat:.3f},{lng:.3f}")
         _geocode_cache[key] = result
-        cache.set(str(key), result, timeout=60 * 60 * 24 * 30)
+        cache.set(cache_key, result, timeout=60 * 60 * 24 * 30)
         return result
     except Exception:
         return f"{lat:.3f},{lng:.3f}"
