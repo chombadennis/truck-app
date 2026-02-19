@@ -1,0 +1,20 @@
+[
+  {
+    "model": "api.driver",
+    "pk": 1,
+    "fields": {
+      "name": "Test Driver",
+      "cycle_type": "70/8",
+      "timezone": "UTC"
+    }
+  },
+  {
+    "model": "api.driver",
+    "pk": 2,
+    "fields": {
+      "name": "Dennis Test",
+      "cycle_type": "70/8",
+      "timezone": "UTC"
+    }
+  }
+]
