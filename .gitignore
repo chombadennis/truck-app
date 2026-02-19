@@ -1,0 +1,25 @@
+# Environment variables
+.env
+*.env
+
+# IDEs and editors
+.idea
+.vscode/
+*.swp
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/
+npm-debug.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Build outputs
+dist/
+build/
