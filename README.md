@@ -1,192 +1,120 @@
-# 🚚 Truck HOS Planner (Django + React)
+# 🚚 Truck HOS Planner- Django + React
 
-A full-stack demo app that simulates **Hours of Service (HOS)** planning for truck drivers.
-Users input trip details, the backend generates a compliant trip plan
-the frontend shows routes on a map and ELD daily log sheets are drawn.
-
----
+A full-stack application for the trucking industry to help drivers and fleet managers track Hours of Service (HOS) and generate Electronic Logging Device (ELD) logs. This project uses a React frontend and a Django backend.
 
 ## ✨ Features
 
-* 📍 Input driver id, start, pickup and dropoff locations
-* ⏱️ Input start time and driver cycle details
-* 🗺️ Map showing the route with start, pickup and dropoff markers
-* 📊 Auto-generated trip events (driving, fueling, breaks, sleeper, etc.)
-* 📜 ELD log sheet rendering per day, exportable as PNG or PDF
-* ✅ Complies with FMCSA HOS rules (70hr/8day, no adverse exceptions)
-* 🎨 Clean professional UI/UX
-
----
+*   📍 **Trip Planning:** Input driver ID, start/pickup/dropoff locations.
+*   🗺️ **Route Visualization:** Displays the entire route on a map with key markers.
+*   📊 **Automated Event Generation:** Creates a compliant trip plan with driving, fueling, and rest events.
+*   📜 **ELD Log Sheets:** Renders daily ELD logs that can be exported to PDF.
+*   ✅ **FMCSA Compliance:** Adheres to HOS rules (e.g., 70hr/8day cycle).
 
 ## 🛠 Tech Stack
 
-* **Backend**: Django REST Framework, Gunicorn
-* **Frontend**: React + Leaflet, Axios, jsPDF, dom-to-image-more
-* **APIs**: OpenRouteService (optional) + Nominatim reverse geocoding
-* **Styling**: Custom CSS with modern design
+*   **Backend**: Django, Django REST Framework, Gunicorn, PostgreSQL
+*   **Frontend**: React, Leaflet, Axios, Material-UI
+*   **Deployment**: **Render** (Backend), **Vercel** (Frontend)
 
 ---
 
-## 🚀 Local Development
+## 🚀 Local Development Setup
 
-### 1. Clone the repositories
+### 1. Prerequisites
 
-```bash
-# clone backend
-git clone https://github.com/your-username/truck-backend.git
-cd truck-backend
+*   Git
+*   Python & Pip
+*   Node.js & npm
 
-# clone frontend
-git clone https://github.com/your-username/truck-frontend.git
-cd truck-frontend
-```
-
----
-
-### 2. Backend Setup (Django)
+### 2. Clone the Repository
 
 ```bash
-cd truck-backend
-python -m venv env
-source env/bin/activate   # on Windows: env\Scripts\activate
-pip install -r requirements.txt
+git clone <your_repository_url>
+cd <your_repository_name>
 ```
 
-Create `.env` file inside `truck-backend/`:
+### 3. Backend Setup (`truck-backend`)
 
-```
-SECRET_KEY=your_secret_here
-DEBUG=True
-ALLOWED_HOSTS=localhost,127.0.0.1
-DATABASE_URL=sqlite:///db.sqlite3
-CORS_ALLOWED_ORIGINS=http://localhost:3000
-ORS_API_KEY=
-GEOCODING_ENABLED=False
-```
-> ⚠️ **Note on GEOCODING_ENABLED**  
-> - `True` → backend will call OpenStreetMap **Nominatim API** to resolve coordinates into `"City, State"`.  
-> - `False` → backend will skip geocoding and return raw latitude/longitude instead.  
-> - Nominatim has strict limits (≈1 request/sec, ~1000/day per IP).  
->   Keep it `False` during **local development** to avoid rate-limit errors,  
->   and switch to `True` in **demo/deployment** so users see real city/state names.
+1.  **Navigate to the backend directory and install dependencies:**
+    ```bash
+    cd truck-backend
+    pip install -r requirements.txt
+    ```
 
-Run migrations:
+2.  **Create a `.env` file** in the `truck-backend` directory with your local settings:
+    ```env
+    SECRET_KEY=your_django_secret_key
+    DEBUG=True
+    ALLOWED_HOSTS=localhost,127.0.0.1
 
-```bash
-python manage.py migrate
-```
+    # Use a local SQLite database for development
+    DATABASE_URL=sqlite:///db.sqlite3
 
-Create a sample driver:
+    # Local frontend URL
+    CORS_ALLOWED_ORIGINS=http://localhost:3000
 
-```bash
-python manage.py shell
->>> from api.models import Driver
->>> Driver.objects.create(name="Test Driver", cycle_type="70/8", timezone="UTC")
->>> exit()
-```
+    # API Keys (optional for local dev)
+    GEOCODING_ENABLED=True
+    ORS_API_KEY=your_openrouteservice_api_key
+    ```
 
-Start backend server:
+3.  **Run database migrations and start the server:**
+    ```bash
+    python manage.py migrate
+    python manage.py runserver
+    ```
+    The backend will be running at `http://127.0.0.1:8000`.
 
-```bash
-python manage.py runserver 0.0.0.0:8000
-```
+### 4. Frontend Setup (`truck-frontend`)
 
-Backend API will be available at:
-👉 `http://localhost:8000/api/plan-trip/`
+1.  **Navigate to the frontend directory and install dependencies:**
+    ```bash
+    cd ../truck-frontend  # From the backend directory
+    npm install
+    ```
 
----
+2.  **Create a `.env` file** in the `truck-frontend` directory:
+    ```env
+    REACT_APP_API_URL=http://127.0.0.1:8000
+    REACT_APP_GEOAPIFY_API_KEY=your_geoapify_api_key
+    ```
 
-### 3. Frontend Setup (React)
-
-```bash
-cd truck-frontend
-npm install
-```
-
-Create `.env` file inside `truck-frontend/`:
-
-```
-REACT_APP_API_URL=http://localhost:8000
-```
-
-Run frontend:
-
-```bash
-npm start
-```
-
-Frontend will be available at:
-👉 `http://localhost:3000`
-
----
-
-## 🔗 How Backend and Frontend Communicate
-
-* React frontend sends trip details to Django backend at:
-  `POST http://localhost:8000/api/plan-trip/`
-* Django backend computes the route, events and logs then responds with JSON
-* React frontend renders the map with markers and generates the ELD log sheets
+3.  **Start the development server:**
+    ```bash
+    npm start
+    ```
+    The frontend will open at `http://localhost:3000`.
 
 ---
 
 ## 📦 Deployment
 
-### Backend (Django)
+This application is configured for deployment with a **Django backend on Render** and a **React frontend on Vercel**.
 
-1. Push `truck-backend` repo to GitHub
-2. Deploy on **Heroku, Railway, or Render**
-3. Set environment variables from `.env` in your hosting service
-4. Expose API at `https://your-backend-service.com/api/plan-trip/`
+### Backend on Render
 
-### Frontend (React)
+1.  Connect your Git repository to a new **Web Service** on Render.
+2.  Set the **Build Command** to: `pip install -r requirements.txt && python manage.py migrate`
+3.  Set the **Start Command** to: `gunicorn config.wsgi`
+4.  Add the following environment variables in your Render dashboard:
 
-1. Push `truck-frontend` repo to GitHub
-2. Deploy on **Vercel or Netlify**
-3. In frontend `.env`, set:
+    ```
+    SECRET_KEY    # Your production Django secret key
+    DEBUG         # False
+    ALLOWED_HOSTS # Your vercel app url (e.g., my-truck-app.vercel.app)
+    DATABASE_URL  # Your production PostgreSQL URL from Neon
+    CORS_ALLOWED_ORIGINS # Your frontend URL (e.g., https://my-truck-app.vercel.app)
+    ORS_API_KEY # Your OpenRouteService API key
+    ```
 
-```
-REACT_APP_API_URL=https://your-backend-service.com
-```
+### Frontend on Vercel
 
-4. Redeploy the frontend so it points to the live backend
+1.  Connect your Git repository to a new project on Vercel.
+2.  Vercel will automatically detect that it is a Create React App and configure the build settings.
+3.  Add the following environment variables in your Vercel project settings:
 
----
-
-## 📤 GitHub Instructions
-
-If backend and frontend are in separate repos:
-
-```bash
-# inside backend
-git init
-git branch -M main
-git remote set-url origin https://github.com/your-username/truck-backend.git
-git push -u origin main
-
-# inside frontend
-git init
-git branch -M main
-git remote set-url origin https://github.com/your-username/truck-frontend.git
-git push -u origin main
-```
-
----
-
-## 🎥 Loom Walkthrough
-
-1. Show cloning the repos from GitHub
-2. Show backend setup: `.env`, migrations, sample driver, runserver
-3. Show frontend setup: `.env`, npm install, npm start
-4. Demo app running: enter trip details, show route on map, show ELD logs
-5. Show exporting PNG and PDF log sheets
-6. End by confirming deployment links work
-
----
-
-## ✅ Deliverables Checklist
-
-* [x] Django backend with `/api/plan-trip/`
-* [x] React frontend with Trip Form, Map and ELD Logs
-* [x] UI styled for professional look
-* [x] Working locally with backend ↔ frontend connection
-* [x] Ready for GitHub + hosted demo + Loom video
+    ```
+    REACT_APP_API_URL          # Your backend URL from Render
+    REACT_APP_GEOAPIFY_API_KEY # Your Geoapify API key
+    ```
+4.  Deploy! Vercel will build and deploy your frontend.
