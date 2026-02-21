@@ -1,6 +1,6 @@
-# 🚚 HOS Planner - Django + React
+# 🚚 Truck HOS Planner - Django + React
 
-A full-stack application for the trucking industry to help drivers and fleet managers plan trips while adhering to Hours of Service (HOS) and generating preview Electronic Logging Device (ELD) logs. This project uses a React frontend and a Django backend.
+A full-stack demo app that simulates Hours of Service (HOS) planning for truck drivers. Users input trip details, the backend generates a compliant trip plan the frontend shows routes on a map and ELD daily log sheets are drawn.
 
 ## ✨ Features
 
