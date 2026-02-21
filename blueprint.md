@@ -64,10 +64,14 @@ The backend is built with Django and the Django REST Framework.
 *   **Django:** A high-level Python web framework.
 *   **Django REST Framework:** A powerful and flexible toolkit for building Web APIs.
 *   **SQLite:** The database used for local development.
+*   **PostgreSQL:** The database used for production.
 
 ## 6. Deployment
 
-The application is deployed to Firebase Hosting. The frontend is built into a static bundle and deployed to Firebase Hosting's CDN.
+The application is deployed with a decoupled frontend and backend.
+
+*   **Frontend:** The React application is deployed to **Vercel**.
+*   **Backend:** The Django API is deployed to **Render**.
 
 ## 7. Key Features
 
