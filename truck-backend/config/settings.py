@@ -21,15 +21,15 @@ DEBUG = os.getenv("DEBUG", "False") == "True"
 # --- Host and CORS Configuration ---
 # In production, these should be a comma-separated string in your Render environment variables.
 # Example: "my-backend.onrender.com,my-frontend.vercel.app"
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1,truck-app-fhec.onrender.com").split(",")
 
 # In production, set this to your Vercel frontend URL.
 # Example: "https://my-frontend.vercel.app"
-CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000").split(",")
+CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000,https://truck-app-fhec.vercel.app").split(",")
 
 # Trust the cloud development environment for CSRF
 CSRF_TRUSTED_ORIGINS = [
-    "https://*.cloudworkstations.dev",
+    "https://truck-app-fhec.vercel.app"
 ]
 
 

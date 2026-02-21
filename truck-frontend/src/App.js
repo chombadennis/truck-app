@@ -3,9 +3,19 @@ import React, { useState } from "react";
 import TripForm from "./components/TripForm";
 import MapComponent from "./components/MapComponents";
 import ELDLog from "./components/ELDLog";
-import AlertDialog from "./components/AlertDialog"; // Import the new component
-import axios from "axios";
+import AlertDialog from "./components/AlertDialog";
+import axios from 'axios'; // <-- Import axios directly
 import { reverseGeocode } from "./utils/geo";
+
+// --- NEW: Environment-aware API endpoint ---
+const API_ENDPOINT = process.env.NODE_ENV === 'production' 
+  ? process.env.REACT_APP_API_URL 
+  : '';
+
+const apiClient = axios.create({
+  baseURL: API_ENDPOINT
+});
+// --- End of new logic ---
 
 // This function is updated to add descriptive notes to all event types.
 export function generateELDEvents(
@@ -121,7 +131,8 @@ export default function App() {
     setIsLoading(true);
     setEldMetadata(null); // Clear previous metadata
     try {
-      const res = await axios.post(`/api/plan-trip/`, payload);
+      // Use the pre-configured axios client
+      const res = await apiClient.post(`/api/plan-trip/`, payload);
       
       if (payload.metadata) {
           setEldMetadata(payload.metadata);

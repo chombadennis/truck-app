@@ -1,7 +1,17 @@
 
 import React, { useState, useEffect } from "react";
 import GeoSearchField from "./GeoSearchField";
-import axios from "axios"; // <-- Import axios for API calls
+import axios from "axios"; // Import axios directly
+
+// --- NEW: Environment-aware API endpoint ---
+const API_ENDPOINT = process.env.NODE_ENV === 'production' 
+  ? process.env.REACT_APP_API_URL 
+  : '';
+
+const apiClient = axios.create({
+  baseURL: API_ENDPOINT
+});
+// --- End of new logic ---
 
 const getLocalDateTimeString = (date) => {
   const year = date.getFullYear();
@@ -45,13 +55,12 @@ export default function TripForm({ onPlan, isLoading }) {
   const [showLoadingMessage, setShowLoadingMessage] = useState(false);
   const [errors, setErrors] = useState({});
 
-  // --- NEW: Fetch rules on component mount ---
+  // --- Fetch rules on component mount ---
   useEffect(() => {
     const fetchRules = async () => {
       try {
-        const response = await axios.get("/api/rules/");
+        const response = await apiClient.get("/api/rules/");
         setRules(response.data);
-        // Set a default selection if rules are loaded
         if (response.data.length > 0) {
           setSelectedRuleId(response.data[0].id);
         }
@@ -60,7 +69,7 @@ export default function TripForm({ onPlan, isLoading }) {
       }
     };
     fetchRules();
-  }, []); // The empty dependency array ensures this runs only once on mount.
+  }, []);
 
   useEffect(() => {
     let messageTimer, showMessageTimer;
