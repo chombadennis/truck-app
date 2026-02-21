@@ -26,7 +26,7 @@ This directory contains the React application, built with Create React App and s
 | `src/` | The main source code for the React application. |
 | `src/App.js` | The main application component. It manages the overall state (trip data, loading status, errors), handles the initial server connection, and orchestrates all other components. |
 | `src/components/` | Reusable React components used throughout the application. |
-| `src/components/GeoSearchField.js` | A specialized input component that uses the Leaflet Geosearch plugin to provide location search and autocomplete functionality. This component is not currently active in the final UI but remains as a utility for potential future enhancements. |
+| `src/components/GeoSearchField.js` | A specialized input component that uses the Leaflet Geosearch plugin to provide location search and autocomplete functionality. T |
 | `src/components/TripForm.js` | A key component containing the form where users input trip details like driver info, vehicle info, start/pickup/dropoff locations (via map clicks), and HOS rules. |
 | `src/components/MapComponent.js` | Responsible for rendering the interactive map using **Leaflet**. It displays the trip route (as a **GeoJSON** polyline), markers for key locations, and handles map click events to set coordinates. |
 | `src/components/ELDLog.js` | Displays the generated ELD events in a clear, logbook format and includes the logic for exporting the view to a PDF. |
