@@ -1,0 +1,54 @@
+
+/* print.css */
+
+/* We'll use this class to hide the download button when printing the PDF */
+.no-print {
+    display: none !important;
+}
+
+@media print {
+    /* Force a white background and dark text for all elements when printing */
+    body, div, span, text, g, path, table, tr, td, th, thead, tbody, tfoot, h1, h2, h3, h4, h5, h6, p, a, strong, em, b, i, u, sub, sup {
+        background: white !important;
+        color: black !important;
+        background-color: white !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    /* Ensure specific chart elements render correctly */
+    .recharts-cartesian-axis-tick-value, .recharts-legend-item-text {
+        fill: black !important;
+    }
+
+    /* Hide any elements that shouldn't be in the print version */
+    .no-print, .no-print * {
+        display: none !important;
+    }
+
+    /* Page layout adjustments */
+    @page {
+        size: auto;
+        margin: 10mm;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Ensure that the log sheets don't have any weird overflows and take up the right space */
+    #root, .App, div[style*="margin: 0 auto"] {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: visible !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    div[id^="log-sheet-"] {
+        break-inside: avoid-page; /* Try to avoid splitting log sheets across pages */
+        page-break-inside: avoid;
+        border: 1.5px solid #333 !important; /* Make sure border is still visible */
+    }
+}

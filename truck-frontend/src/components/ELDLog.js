@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { downloadEldAsPdf } from "../utils/pdfDownloader";
 
 // A more professional and complete ELD Log component that closer resembles a paper log.
@@ -9,6 +9,7 @@ import { downloadEldAsPdf } from "../utils/pdfDownloader";
  *  - metadata: { driverName, vehicleId, carrier, homeTerminal, coDriver?, shippingDocs?, hosRule? }
  */
 export default function ELDLog({ events = [], metadata = {} }) {
+  const [isDownloading, setIsDownloading] = useState(false);
 
   // Memoized calculation to split events by local calendar day.
   const dayBuckets = useMemo(() => {
@@ -267,6 +268,22 @@ export default function ELDLog({ events = [], metadata = {} }) {
       </div>
   );
 
+  const handleDownload = async () => {
+    // This guard prevents the function from running if there's nothing to download.
+    if (dayBuckets.length === 0) return;
+
+    setIsDownloading(true);
+    try {
+      await downloadEldAsPdf(dayBuckets, metadata);
+    } catch (error) {
+      console.error("PDF download failed unexpectedly:", error);
+      alert("Could not complete the PDF download. Please check the console for details.");
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  // Base style for the button
   const buttonStyle = {
     backgroundColor: '#DD6B20',
     color: 'white',
@@ -277,21 +294,29 @@ export default function ELDLog({ events = [], metadata = {} }) {
     cursor: 'pointer',
     fontSize: '16px',
     boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+    transition: 'background-color 0.3s, opacity 0.3s',
+  };
+
+  // Style for the button when it's disabled
+  const disabledButtonStyle = {
+    ...buttonStyle,
+    backgroundColor: '#a0aec0', // A more muted color
+    cursor: 'not-allowed',
+    opacity: 0.6,
   };
 
   // --- Component Return ---
   return (
     <div style={{ maxWidth: 1100, margin: '0 auto', padding: 16, overflowX: 'auto' }}>
-        {dayBuckets.length > 0 && (
-            <div style={{ textAlign: 'center', marginBottom: 20 }}>
-                <button 
-                    style={buttonStyle}
-                    onClick={() => downloadEldAsPdf(dayBuckets, metadata)}
-                >
-                    Download as PDF
-                </button>
-            </div>
-        )}
+      <div style={{ textAlign: 'center', marginBottom: 20 }}>
+          <button 
+              style={(isDownloading || dayBuckets.length === 0) ? disabledButtonStyle : buttonStyle}
+              onClick={handleDownload}
+              disabled={isDownloading || dayBuckets.length === 0}
+          >
+              {isDownloading ? "Downloading..." : "Download as PDF"}
+          </button>
+      </div>
 
       {dayBuckets.length === 0 ? (
         <div style={{ color: "#4A5568", textAlign: 'center', padding: 40, border: '1px dashed #ccc', backgroundColor: '#fafafa' }}>

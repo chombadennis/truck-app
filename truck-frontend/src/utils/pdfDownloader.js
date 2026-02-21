@@ -16,13 +16,13 @@ export const downloadEldAsPdf = async (dayBuckets, metadata) => {
   }
 
   const doc = new jsPDF({
-    orientation: "landscape", // Set orientation to landscape
+    orientation: "landscape",
     unit: "pt",
     format: "a4",
   });
 
   const pdfWidth = doc.internal.pageSize.getWidth();
-  const margin = 30; // Increased margin for better spacing
+  const margin = 30;
 
   for (let i = 0; i < dayBuckets.length; i++) {
     const day = dayBuckets[i];
@@ -33,26 +33,32 @@ export const downloadEldAsPdf = async (dayBuckets, metadata) => {
       continue;
     }
 
-    // --- MODIFICATION: Handle scrollable remarks section ---
-    const remarksElement = sheetElement.querySelector(".remarks-section");
-    const originalRemarksStyle = {
-      height: remarksElement ? remarksElement.style.height : "",
-      overflowY: remarksElement ? remarksElement.style.overflowY : "",
-    };
-
+    let clonedSheet = null; 
     try {
-      // Temporarily change styles to show all content
-      if (remarksElement) {
-        remarksElement.style.height = "auto";
-        remarksElement.style.overflowY = "visible";
+      clonedSheet = sheetElement.cloneNode(true);
+      const originalWidth = sheetElement.offsetWidth;
+      
+      clonedSheet.style.position = 'absolute';
+      clonedSheet.style.top = '0px';
+      clonedSheet.style.left = '-9999px';
+      clonedSheet.style.width = `${originalWidth}px`; 
+
+      document.body.appendChild(clonedSheet);
+
+      const clonedRemarks = clonedSheet.querySelector(".remarks-section");
+      if (clonedRemarks) {
+        clonedRemarks.style.height = "auto";
+        clonedRemarks.style.overflowY = "visible";
       }
 
-      const dataUrl = await domtoimage.toPng(sheetElement, {
+      // Capture the cloned element with higher resolution and a clean background.
+      const dataUrl = await domtoimage.toPng(clonedSheet, {
         quality: 1.0,
-        bgcolor: "#ffffff",
-        scale: 2, // Increase scale for higher resolution
+        scale: 3, // Increased scale from 2 to 3 for much better resolution.
+        bgcolor: '#ffffff', // Force a solid white background to prevent style conflicts.
       });
 
+      // --- PDF Generation ---
       if (i > 0) {
         doc.addPage();
       }
@@ -65,20 +71,14 @@ export const downloadEldAsPdf = async (dayBuckets, metadata) => {
       
     } catch (error) {
       console.error(`Failed to capture log sheet for ${day.dateKey}`, error);
-      alert(
-        `An error occurred while generating the PDF for ${day.dateKey}. Please check the console.`
-      );
+      alert(`An error occurred while generating the PDF for ${day.dateKey}. Please check the console.`);
     } finally {
-      // ALWAYS restore original styles
-      if (remarksElement) {
-        remarksElement.style.height = originalRemarksStyle.height;
-        remarksElement.style.overflowY = originalRemarksStyle.overflowY;
+      if (clonedSheet) {
+        document.body.removeChild(clonedSheet);
       }
     }
   }
 
-  const driverName = metadata.driverName
-    ? `-${metadata.driverName.replace(/ /g, "_")}`
-    : "";
+  const driverName = metadata.driverName ? `-${metadata.driverName.replace(/ /g, "_")}` : "";
   doc.save(`ELD-Log${driverName}-${new Date().toISOString().split("T")[0]}.pdf`);
 };

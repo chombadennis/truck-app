@@ -4,6 +4,7 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import "leaflet/dist/leaflet.css";
+import "./print.css"; // Import the print styles
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
