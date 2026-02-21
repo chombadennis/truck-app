@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TripForm from "./components/TripForm";
 import MapComponent from "./components/MapComponents";
 import ELDLog from "./components/ELDLog";
@@ -116,6 +116,11 @@ export default function App() {
   const [events, setEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  // --- NEW: State for server connection and HOS rules ---
+  const [isConnecting, setIsConnecting] = useState(true);
+  const [hosRules, setHosRules] = useState([]);
+  // ---
+
   // State for coordinates
   const [startCoords, setStartCoords] = useState({ lat: "", lng: "" });
   const [pickupCoords, setPickupCoords] = useState({ lat: "", lng: "" });
@@ -126,6 +131,29 @@ export default function App() {
 
   // New state for the alert dialog
   const [alertInfo, setAlertInfo] = useState({ isOpen: false });
+
+  // --- NEW: useEffect to fetch HOS rules on initial load ---
+  useEffect(() => {
+    const fetchHosRules = async () => {
+      try {
+        const response = await apiClient.get("/api/rules/");
+        setHosRules(response.data || []);
+      } catch (error) {
+        console.error("Error fetching HOS rules:", error);
+        setAlertInfo({
+          isOpen: true,
+          type: 'error',
+          title: 'Backend Connection Error',
+          message: 'Could not fetch compliance rules from the server. This can happen when the server is waking up from sleep. Please wait a moment and then refresh the page.',
+        });
+      } finally {
+        setIsConnecting(false);
+      }
+    };
+
+    fetchHosRules();
+  }, []); // Empty dependency array ensures this runs only once on mount.
+  // ---
 
   const handlePlan = async (payload) => {
     setIsLoading(true);
@@ -219,6 +247,19 @@ export default function App() {
 
   const closeAlert = () => setAlertInfo({ isOpen: false });
 
+  // --- NEW: Render a loading screen while connecting to the backend ---
+  if (isConnecting) {
+    return (
+      <div className="flex flex-col justify-center items-center h-screen bg-gray-50">
+        <h1 className="text-3xl font-bold text-center text-amber-flame-500 font-serif mb-4">HOS Planner</h1>
+        {/* Simple spinner using Tailwind */}
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-amber-flame-500 mb-4"></div>
+        <p className="text-xl font-semibold text-gray-700">Connecting to the server...</p>
+        <p className="text-sm text-gray-500 mt-2">This may take up to 30 seconds on our free hosting plan.</p>
+      </div>
+    );
+  }
+  // ---
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -254,7 +295,8 @@ export default function App() {
       </div>
 
       <div className="bg-white bg-opacity-80 backdrop-blur-md rounded-xl shadow-2xl p-6 mb-6 border border-amber-flame-500 hover:border-amber-flame-400 transition-all duration-300">
-        <TripForm onPlan={handlePlan} isLoading={isLoading} />
+        {/* --- MODIFIED: Pass hosRules to TripForm --- */}
+        <TripForm onPlan={handlePlan} isLoading={isLoading} hosRules={hosRules} />
       </div>
 
       <div className="bg-white bg-opacity-80 backdrop-blur-md rounded-xl shadow-2xl p-6 mb-6 border border-amber-flame-500 hover:border-amber-flame-400 transition-all duration-300">
