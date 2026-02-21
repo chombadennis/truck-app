@@ -1,6 +1,11 @@
 # api/admin.py
 from django.contrib import admin
-from .models import Driver, Trip, DutyEvent
+# Add RegionalRule to the import
+from .models import Driver, Trip, DutyEvent, Truck, RegionalRule
+
+@admin.register(Truck)
+class TruckAdmin(admin.ModelAdmin):
+    list_display = ("id", "vin", "year", "make", "model")
 
 @admin.register(Driver)
 class DriverAdmin(admin.ModelAdmin):
@@ -13,3 +18,8 @@ class TripAdmin(admin.ModelAdmin):
 @admin.register(DutyEvent)
 class DutyEventAdmin(admin.ModelAdmin):
     list_display = ("id", "trip", "timestamp", "status", "duration_minutes")
+
+# Add the new admin registration for RegionalRule
+@admin.register(RegionalRule)
+class RegionalRuleAdmin(admin.ModelAdmin):
+    list_display = ("id", "name", "cycle_type")

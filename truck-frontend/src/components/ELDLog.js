@@ -6,7 +6,7 @@ import { downloadEldAsPdf } from "../utils/pdfDownloader";
 /**
  * Props:
  *  - events: [{status, timestamp (ISO), duration_minutes, miles?, location?, note?}, ...]
- *  - metadata: { driverName, vehicleId, carrier, homeTerminal, coDriver?, shippingDocs? }
+ *  - metadata: { driverName, vehicleId, carrier, homeTerminal, coDriver?, shippingDocs?, hosRule? }
  */
 export default function ELDLog({ events = [], metadata = {} }) {
 
@@ -136,15 +136,19 @@ export default function ELDLog({ events = [], metadata = {} }) {
     const availableTomorrow = (70 - totalLast7).toFixed(2);
 
     return (
-      <div id={`log-sheet-${dateKey}`} key={dateKey} style={{ marginBottom: 20, fontFamily: "'Arial', sans-serif", fontSize: 12, border: '1.5px solid #333' }}>
+      <div id={`log-sheet-${dateKey}`} key={dateKey} style={{ marginBottom: 20, fontFamily: "'Arial', sans-serif", fontSize: 12, border: '1.5px solid #333', color: '#1A202C', backgroundColor: 'white' }}>
         
         {/* --- Header Section --- */}
         <div style={{ padding: 8, borderBottom: '1.5px solid #333', background: '#f0f0f0' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                <span style={{ fontWeight: 'bold', fontSize: 16 }}>Driver's Daily Log</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ flexGrow: 1, marginRight: '1rem' }}>
+                    <span style={{ fontWeight: 'bold', fontSize: 16 }}>
+                        {`Driver's Daily Log - ${metadata.hosRule || 'N/A'}`}
+                    </span>
+                </div>
                 <div>
                     <span>Date: </span>
-                    <span style={{ minWidth: 100, borderBottom: '1px solid #333', padding: '0 8px'}}>{dateKey}</span>
+                    <span style={{ minWidth: 100, borderBottom: '1px solid #333', padding: '0 8px' }}>{dateKey}</span>
                 </div>
             </div>
         </div>
@@ -212,7 +216,7 @@ export default function ELDLog({ events = [], metadata = {} }) {
                     {ev.note && ` (Note: ${ev.note})`}
                   </div>
                 ))}
-                {dayEvents.length === 0 && <span style={{color: '#888'}}>No duty status changes recorded for this day.</span>}
+                {dayEvents.length === 0 && <span style={{color: '#4A5568'}}>No duty status changes recorded for this day.</span>}
             </div>
         </div>
 
@@ -249,7 +253,7 @@ export default function ELDLog({ events = [], metadata = {} }) {
   // --- Helper sub-components for styling ---
   const RecapItem = ({ label, value }) => (
       <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 11, color: '#444' }}>{label}</div>
+          <div style={{ fontSize: 11, color: '#4A5568' }}>{label}</div>
           <div style={{ fontWeight: 'bold', fontSize: 14 }}>{value || '—'}</div>
       </div>
   );
@@ -258,10 +262,22 @@ export default function ELDLog({ events = [], metadata = {} }) {
 
   const FooterItem = ({ label, value }) => (
       <div style={{ flex: 1 }}>
-          <span style={{ color: '#555' }}>{label}: </span>
+          <span style={{ color: '#4A5568' }}>{label}: </span>
           <strong style={{ borderBottom: '1px dotted #333', padding: '0 4px' }}>{value || '—'}</strong>
       </div>
   );
+
+  const buttonStyle = {
+    backgroundColor: '#DD6B20',
+    color: 'white',
+    padding: '10px 20px',
+    border: 'none',
+    borderRadius: '5px',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+    fontSize: '16px',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+  };
 
   // --- Component Return ---
   return (
@@ -269,6 +285,7 @@ export default function ELDLog({ events = [], metadata = {} }) {
         {dayBuckets.length > 0 && (
             <div style={{ textAlign: 'center', marginBottom: 20 }}>
                 <button 
+                    style={buttonStyle}
                     onClick={() => downloadEldAsPdf(dayBuckets, metadata)}
                 >
                     Download as PDF
@@ -277,7 +294,7 @@ export default function ELDLog({ events = [], metadata = {} }) {
         )}
 
       {dayBuckets.length === 0 ? (
-        <div style={{ color: "#666", textAlign: 'center', padding: 40, border: '1px dashed #ccc' }}>
+        <div style={{ color: "#4A5568", textAlign: 'center', padding: 40, border: '1px dashed #ccc', backgroundColor: '#fafafa' }}>
             No ELD events found. Plan a trip to generate a log.
         </div>
       ) : (

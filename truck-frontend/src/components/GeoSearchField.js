@@ -1,33 +1,60 @@
 import React, { useState, useRef } from 'react';
 import Select from 'react-select';
 
-// Custom styles to fix the placeholder alignment issue
-const customStyles = {
-  placeholder: (provided) => ({
-    ...provided,
-    marginLeft: '2px', // Nudge the placeholder to the right
-  }),
-  input: (provided) => ({
-    ...provided,
-    marginLeft: '2px',
-  }),
-};
-
-const GeoSearchField = ({ onLocationSelect, placeholder }) => {
+const GeoSearchField = ({ onLocationSelect, placeholder, hasError }) => {
   const [options, setOptions] = useState([]);
   const debounceTimeout = useRef(null);
 
-  // This function now uses fetch() directly to control the User-Agent header
+  const customStyles = {
+    control: (provided) => ({
+      ...provided,
+      borderColor: hasError ? '#EF4444' : provided.borderColor, // Use Tailwind's red-500
+      boxShadow: hasError ? '0 0 0 1px #EF4444' : provided.boxShadow,
+      '&:hover': {
+        borderColor: hasError ? '#EF4444' : provided.borderColor,
+      },
+    }),
+    placeholder: (provided) => ({
+      ...provided,
+      marginLeft: '2px',
+    }),
+    input: (provided) => ({
+      ...provided,
+      marginLeft: '2px',
+    }),
+    menuPortal: (provided) => ({
+        ...provided,
+        zIndex: 9999,
+    }),
+    menu: (provided) => ({
+      ...provided,
+      backgroundColor: 'white',
+      color: '#2D3748',
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      backgroundColor: state.isFocused ? '#F7FAFC' : 'white', // A light gray for focused option
+      color: '#2D3748', // A dark gray for text
+      '&:active': {
+        backgroundColor: '#EDF2F7', // A slightly darker gray for active option
+      },
+    }),
+  };
+
   const fetchGeocodingData = (inputValue) => {
-    // A unique User-Agent is required by Nominatim's usage policy.
     const headers = new Headers({
-        'User-Agent': 'Truck HOS Planner Demo/1.0 (cloud.google.com/)'
+      'User-Agent': 'Truck HOS Planner Demo/1.0 (cloud.google.com/)',
     });
 
-    fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(inputValue)}&format=json&addressdetails=1`, { headers })
-      .then(response => {
+    fetch(
+      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+        inputValue
+      )}&format=json&addressdetails=1`,
+      { headers }
+    )
+      .then((response) => {
         if (!response.ok) {
-            throw new Error(`Nominatim API failed: ${response.statusText}`);
+          throw new Error(`Nominatim API failed: ${response.statusText}`);
         }
         return response.json();
       })
@@ -53,7 +80,6 @@ const GeoSearchField = ({ onLocationSelect, placeholder }) => {
     }
 
     if (inputValue.length > 2) {
-        // Increased debounce time to be safer
       debounceTimeout.current = setTimeout(() => fetchGeocodingData(inputValue), 800);
     } else {
       setOptions([]);
@@ -66,12 +92,13 @@ const GeoSearchField = ({ onLocationSelect, placeholder }) => {
 
   return (
     <Select
-      styles={customStyles} // Apply the custom styles here
+      styles={customStyles}
       options={options}
       onInputChange={handleInputChange}
       onChange={handleChange}
       placeholder={placeholder}
       isClearable
+      menuPortalTarget={document.body}
     />
   );
 };

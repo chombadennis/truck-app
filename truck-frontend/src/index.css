@@ -1,3 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes animated-gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 body {
   margin: 0;
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
@@ -5,14 +23,67 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #f4f6f8;
-  color: #2c3e50;
+  background: linear-gradient(
+    -45deg,
+    theme('colors.night-bordeaux.950'),
+    theme('colors.ink-black.950'),
+    theme('colors.orange.950'),
+    theme('colors.night-bordeaux.900')
+  );
+  background-size: 400% 400%;
+  animation: animated-gradient 15s ease infinite;
+  color: theme('colors.gray.200');
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
-  background: #f0f0f0;
+  background: theme('colors.ink-black.800');
+  color: theme('colors.amber-flame.300');
   padding: 2px 6px;
   border-radius: 4px;
+}
+
+/* Fix for blurred Leaflet legend text */
+.legend {
+  background-color: rgba(255, 255, 255, 0.85);
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+.legend i {
+  width: 18px;
+  height: 18px;
+  float: left;
+  margin-right: 8px;
+}
+
+.legend, .legend span, .legend div {
+  color: #2D3748 !important; /* A dark gray from Tailwind */
+  font-weight: 700;
+  text-shadow: none;
+}
+
+/* Global override for react-select dropdown visibility */
+.css-26l3qy-menu, .css-4mp3pp-menu, .css-1n7v3ny-menu {
+    background-color: white !important;
+    color: #2D3748 !important; /* A dark gray from Tailwind */
+}
+
+.css-1nmdiq5-option, .css-yt9ioa-option, .css-12jo7m5-option {
+    background-color: white !important;
+    color: #2D3748 !important; /* A dark gray from Tailwind */
+}
+
+.css-1nmdiq5-option:hover, .css-yt9ioa-option:hover, .css-12jo7m5-option:hover {
+    background-color: #F7FAFC !important; /* A light gray for focused/hover option */
+}
+
+.route-line {
+    width: 20px;
+    height: 3px;
+    background-color: blue;
+    display: inline-block;
+    margin-right: 5px;
 }

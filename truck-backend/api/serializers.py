@@ -1,5 +1,11 @@
 from rest_framework import serializers
-from .models import Trip, DutyEvent, Driver
+from .models import Trip, DutyEvent, Driver, RegionalRule # Import RegionalRule
+
+# Add the new serializer for the RegionalRule model
+class RegionalRuleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RegionalRule
+        fields = ['id', 'name', 'cycle_type']
 
 class DriverSerializer(serializers.ModelSerializer):
     class Meta:

@@ -50,6 +50,7 @@ export const downloadEldAsPdf = async (dayBuckets, metadata) => {
       const dataUrl = await domtoimage.toPng(sheetElement, {
         quality: 1.0,
         bgcolor: "#ffffff",
+        scale: 2, // Increase scale for higher resolution
       });
 
       if (i > 0) {

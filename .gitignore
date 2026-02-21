@@ -21,7 +21,7 @@ npm-debug.log
 __pycache__/
 *.py[cod]
 *$py.class
-truck-backend/env/
+truck-backend/venv/
 
 # Django
 *.djcache
