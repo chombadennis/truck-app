@@ -55,7 +55,15 @@ This directory contains the Django REST Framework application.
 | `manage.py` | **A command-line utility for Django.** It is the primary tool for interacting with the Django project to perform tasks such as running the development server (`runserver`), applying database changes (`migrate`), creating new apps, and other administrative tasks. |
 | `requirements.txt` | A list of all Python dependencies required for the project (Django, djangorestframework, psycopg2-binary, gunicorn, etc.). |
 
-## 4. Key Libraries & Services
+## 4. Data Model / Persistence
+
+*   **Production Database:** The application uses a managed **PostgreSQL** database hosted by **Neon** for the production environment. This provides a robust, scalable, and persistent data store.
+*   **Development Database:** For local development, the application is flexible. Developers can choose between:
+    *   **SQLite:** A file-based database (`db.sqlite3`) for quick, simple setup without needing a separate server. This is the default recommendation for getting started quickly.
+    *   **PostgreSQL:** Developers can also connect to a local or cloud-hosted PostgreSQL instance (like Neon) to perfectly mirror the production environment.
+*   **Data Management:** Django's built-in ORM is used for all database interactions, allowing for a consistent data access layer regardless of the underlying database.
+
+## 5. Key Libraries & Services
 
 *   **React:** For building the user interface.
 *   **Tailwind CSS:** For all styling and creating a modern, responsive UI.
@@ -66,25 +74,25 @@ This directory contains the Django REST Framework application.
 *   **Nominatim API:** Used for reverse geocoding to find place names from coordinates for a better user experience.
 *   **Django REST Framework:** A powerful toolkit for building the web API in the backend.
 *   **Gunicorn:** A production-grade WSGI server used to run the Django application on Render.
-*   **Neon:** A serverless PostgreSQL provider, used as the production database.
+*   **Neon / PostgreSQL:** A serverless PostgreSQL provider, used as the production database.
 *   **jsPDF & html2canvas:** Used in combination on the frontend to generate PDF exports of the ELD logs.
 
-## 5. Deployment
+## 6. Deployment
 
 The application is deployed with a decoupled frontend and backend.
 
 *   **Frontend:** The React application is deployed to **Vercel**.
 *   **Backend:** The Django API is deployed to **Render**.
 
-## 6. Getting Started
+## 7. Getting Started
 
-### 6.1. Frontend
+### 7.1. Frontend
 
 1.  Navigate to the `truck-frontend` directory.
 2.  Install the dependencies: `npm install`
-3.  Start the development server: `npm start`
+3.  Start the a development server: `npm start`
 
-### 6.2. Backend
+### 7.2. Backend
 
 1.  Navigate to the `truck-backend` directory.
 2.  Install the dependencies: `pip install -r requirements.txt`

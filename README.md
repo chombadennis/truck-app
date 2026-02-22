@@ -47,13 +47,21 @@ cd truck-app
 
 ### 3. Backend Setup (`truck-backend`)
 
-1.  **Navigate to the backend directory and install dependencies:**
+1.  **Navigate to the backend directory, create, and activate a virtual environment:**
     ```bash
     cd truck-backend
+    python -m venv venv
+    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+    ```
+
+2.  **Install dependencies:**
+    ```bash
     pip install -r requirements.txt
     ```
 
-2.  **Create a `.env` file** in the `truck-backend` directory:
+3.  **Create a `.env` file** in the `truck-backend` directory. You have two choices for the database:
+
+    **Option A: Use SQLite (Simple)**
     ```env
     SECRET_KEY=your_django_secret_key
     DEBUG=True
@@ -63,7 +71,18 @@ cd truck-app
     ORS_API_KEY=your_openrouteservice_api_key
     ```
 
-3.  **Run database migrations and start the server:**
+    **Option B: Use PostgreSQL (like production)**
+    ```env
+    SECRET_KEY=your_django_secret_key
+    DEBUG=True
+    ALLOWED_HOSTS=localhost,127.0.0.1
+    DATABASE_URL=your_local_or_neon_postgresql_url
+    CORS_ALLOWED_ORIGINS=http://localhost:3000
+    ORS_API_KEY=your_openrouteservice_api_key
+    ```
+
+4.  **Run database migrations and start the server:**
+    *(Ensure your virtual environment is activated)*
     ```bash
     python manage.py migrate
     python manage.py runserver

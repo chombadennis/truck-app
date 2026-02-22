@@ -1,4 +1,5 @@
 
+from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
@@ -7,6 +8,14 @@ from .models import RegionalRule, Driver, Truck, Trip, DutyEvent
 from .serializers import RegionalRuleSerializer
 from .hos_engine import compute_trip_plan
 from datetime import datetime
+
+
+def health_check(request):
+    """
+    A simple endpoint to verify that the service is up and running.
+    Used by external monitoring to prevent the service from sleeping.
+    """
+    return HttpResponse("OK", status=200)
 
 
 class RegionalRuleListView(ListAPIView):
