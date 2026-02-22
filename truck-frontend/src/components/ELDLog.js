@@ -131,10 +131,16 @@ export default function ELDLog({ events = [], metadata = {} }) {
 
     const onDutyHoursToday = ((totalMinutesPerStatus.DRIVE + totalMinutesPerStatus.ON) / 60).toFixed(2);
 
+    // --- DYNAMIC RECAP CALCULATION ---
+    const is70HourRule = metadata.hosRule?.includes('70');
+    const cycleLimit = is70HourRule ? 70 : 60;
+    const cycleLabel = is70HourRule ? '70hr' : '60hr';
+    const cycleDays = is70HourRule ? 8 : 7;
+    
     // Mock recap data
     const prevDaysOnDuty = (dayIndex * 4.5);
-    const totalLast7 = (prevDaysOnDuty + Number(onDutyHoursToday)).toFixed(2);
-    const availableTomorrow = (70 - totalLast7).toFixed(2);
+    const totalOnDutyRolling = (prevDaysOnDuty + Number(onDutyHoursToday)).toFixed(2);
+    const availableTomorrow = (cycleLimit - totalOnDutyRolling).toFixed(2);
 
     return (
       <div id={`log-sheet-${dateKey}`} key={dateKey} style={{ marginBottom: 20, fontFamily: "'Arial', sans-serif", fontSize: 12, border: '1.5px solid #333', color: '#1A202C', backgroundColor: 'white' }}>
@@ -221,11 +227,11 @@ export default function ELDLog({ events = [], metadata = {} }) {
             </div>
         </div>
 
-        {/* --- Recap Section --- */}
+        {/* --- Recap Section (NOW DYNAMIC) --- */}
         <div style={{ display: 'flex', justifyContent: 'space-around', padding: 8, borderBottom: '1.5px solid #333', background: '#f0f0f0' }}>
             <RecapItem label="On Duty Hours Today" value={onDutyHoursToday} />
-            <RecapItem label="Total On Duty (Last 7 Days)" value={totalLast7} />
-            <RecapItem label="Hours Available Tomorrow (70hr)" value={availableTomorrow > 0 ? availableTomorrow : '0.00'} />
+            <RecapItem label={`Total On Duty (Last ${cycleDays} Days)`} value={totalOnDutyRolling} />
+            <RecapItem label={`Hours Available Tomorrow (${cycleLabel})`} value={availableTomorrow > 0 ? availableTomorrow : '0.00'} />
         </div>
 
         {/* --- Footer Section --- */}
