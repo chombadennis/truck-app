@@ -21,13 +21,6 @@ A full-stack demo app that simulates Hours of Service (HOS) planning for truck d
     *   **Nominatim**: For reverse geocoding coordinates to place names.
 *   **PDF Generation**: jsPDF, html2canvas.
 *   **Deployment**: Backend on **Render**, Frontend on **Vercel**.
-
-## ‼️ Caveat: Cold Starts on Free Tiers
-
-This application uses a modern split deployment architecture. The frontend is hosted on Vercel, which delivers a fast, globally distributed client experience, while the backend API is powered by Django running on Render.
-
-Because the project uses Render’s free tier, the backend service automatically "sleeps" during inactivity. When a user opens the app after a period of idle time, the Django server must first wake up and reinitialize before responding to requests. This brief cold-start delay (up to 30 seconds) can momentarily affect the app’s loading behavior, as the frontend depends on the backend API to fetch data and fully boot the user interface. A loading indicator has been implemented to inform the user during this process.
-
 ---
 
 ## 🚀 Local Development Setup
