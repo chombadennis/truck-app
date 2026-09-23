@@ -59,7 +59,11 @@ const GeoSearchField = ({ onLocationSelect, placeholder, hasError }) => {
         return response.json();
       })
       .then((results) => {
-        const newOptions = results.map((result) => ({
+        // Filter out large administrative boundaries (like counties/states) which are often unroutable
+        const validResults = results.filter(
+          (r) => !(r.class === 'boundary' || r.type === 'administrative')
+        );
+        const newOptions = validResults.map((result) => ({
           value: {
             lat: parseFloat(result.lat),
             lon: parseFloat(result.lon),

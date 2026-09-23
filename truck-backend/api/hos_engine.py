@@ -36,7 +36,8 @@ def fetch_route_geojson(coords: List[List[float]]) -> Dict[str, Any]:
         try:
             url = "https://api.openrouteservice.org/v2/directions/driving-car/geojson"
             headers = {"Authorization": ORS_API_KEY, "Content-Type": "application/json"}
-            body = {"coordinates": coords, "instructions": False}
+            body = {"coordinates": coords, "instructions": False, "radiuses": [50000] * len(coords)}
+            print("ORS payload:", body)
             r = requests.post(url, json=body, headers=headers, timeout=30)
             r.raise_for_status()
             data = r.json()
@@ -66,6 +67,9 @@ def fetch_route_geojson(coords: List[List[float]]) -> Dict[str, Any]:
                 "legs": legs,
                 "geometry_coords": geometry_coords,
             }
+        except requests.exceptions.HTTPError as e:
+            error_msg = e.response.text if e.response else str(e)
+            print("ORS fetch failed (HTTPError), falling back to haversine:", error_msg)
         except Exception as e:
             print("ORS fetch failed, falling back to haversine:", e)
 
@@ -190,6 +194,8 @@ def compute_trip_plan(request_data: Dict[str, Any], driver_obj=None) -> Dict[str
     rolling_history = request_data.get("rolling_history", []) or []
 
     route = fetch_route_geojson(coords_input)
+    if "error" in route:
+        return route
     geometry_coords = route.get("geometry_coords") or []
     total_distance_m = float(route.get("distance_m", 0.0))
     total_distance_miles = total_distance_m / 1609.344 if total_distance_m else 0.0

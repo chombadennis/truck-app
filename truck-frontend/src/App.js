@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import TripForm from "./components/TripForm";
 import MapComponent from "./components/MapComponents";
 import ELDLog from "./components/ELDLog";
@@ -111,6 +111,8 @@ export function generateELDEvents(
 
 
 export default function App() {
+  const resultsRef = useRef(null);
+
   // State for map and events
   const [routeGeo, setRouteGeo] = useState(null);
   const [events, setEvents] = useState([]);
@@ -218,6 +220,13 @@ export default function App() {
         message: 'Your route and ELD logs are ready. You can view them below.',
       });
 
+      // Autoscroll to results
+      setTimeout(() => {
+        if (resultsRef.current) {
+          resultsRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+
     } catch (err) {
       console.error("Plan trip error", err.response?.data || err.message);
       let title = "An Unexpected Error Occurred";
@@ -299,7 +308,7 @@ export default function App() {
         <TripForm onPlan={handlePlan} isLoading={isLoading} hosRules={hosRules} />
       </div>
 
-      <div className="bg-white bg-opacity-80 backdrop-blur-md rounded-xl shadow-2xl p-6 mb-6 border border-amber-flame-500 hover:border-amber-flame-400 transition-all duration-300">
+      <div ref={resultsRef} className="bg-white bg-opacity-80 backdrop-blur-md rounded-xl shadow-2xl p-6 mb-6 border border-amber-flame-500 hover:border-amber-flame-400 transition-all duration-300">
         <h3 className="text-xl font-semibold text-center text-deep-saffron-500 mb-4 pb-2 border-b-2 border-deep-saffron-200 font-serif">Route Map & Coordinates</h3>
         <MapComponent
           routeGeojson={routeGeo}
