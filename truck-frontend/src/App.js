@@ -220,13 +220,6 @@ export default function App() {
         message: 'Your route and ELD logs are ready. You can view them below.',
       });
 
-      // Autoscroll to results
-      setTimeout(() => {
-        if (resultsRef.current) {
-          resultsRef.current.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
-
     } catch (err) {
       console.error("Plan trip error", err.response?.data || err.message);
       let title = "An Unexpected Error Occurred";
@@ -254,7 +247,18 @@ export default function App() {
     }
   };
 
-  const closeAlert = () => setAlertInfo({ isOpen: false });
+  const closeAlert = () => {
+    const wasSuccess = alertInfo.type === 'success';
+    setAlertInfo({ isOpen: false });
+    
+    if (wasSuccess) {
+      setTimeout(() => {
+        if (resultsRef.current) {
+          resultsRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    }
+  };
 
   // --- NEW: Render a loading screen while connecting to the backend ---
   if (isConnecting) {

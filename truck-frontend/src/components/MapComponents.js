@@ -60,6 +60,32 @@ const Legend = () => {
     return null;
   };
 
+const FitBounds = ({ markers, polylinePositions }) => {
+  const map = useMap();
+
+  React.useEffect(() => {
+    if (markers.length === 0 && polylinePositions.length === 0) return;
+
+    const bounds = L.latLngBounds([]);
+
+    markers.forEach((m) => {
+      if (m.coord && m.coord.lat !== "" && m.coord.lng !== "") {
+        bounds.extend([m.coord.lat, m.coord.lng]);
+      }
+    });
+
+    polylinePositions.forEach((p) => {
+      bounds.extend(p);
+    });
+
+    if (bounds.isValid()) {
+      map.fitBounds(bounds, { padding: [50, 50] });
+    }
+  }, [map, markers, polylinePositions]);
+
+  return null;
+};
+
 export default function MapComponent({ routeGeojson, start, pickup, dropoff }) {
   const markers = [
     { coord: start, label: "Start", icon: greenIcon },
@@ -90,6 +116,7 @@ export default function MapComponent({ routeGeojson, start, pickup, dropoff }) {
         )}
       </FeatureGroup>
       <Legend />
+      <FitBounds markers={markers} polylinePositions={polylinePositions} />
     </MapContainer>
   );
 }
