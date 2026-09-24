@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import Select from 'react-select';
 
-const GeoSearchField = ({ onLocationSelect, placeholder, hasError }) => {
+const GeoSearchField = ({ onLocationSelect, placeholder, hasError, isDisabled }) => {
   const [options, setOptions] = useState([]);
   const debounceTimeout = useRef(null);
 
@@ -104,6 +104,7 @@ const GeoSearchField = ({ onLocationSelect, placeholder, hasError }) => {
       onChange={handleChange}
       placeholder={placeholder}
       isClearable
+      isDisabled={isDisabled}
       menuPortalTarget={document.body}
     />
   );

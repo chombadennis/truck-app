@@ -55,6 +55,10 @@ export default function TripForm({ onPlan, isLoading }) {
   const [showLoadingMessage, setShowLoadingMessage] = useState(false);
   const [errors, setErrors] = useState({});
 
+  // Bumping this remounts the (uncontrolled) location fields so their
+  // displayed selection is wiped along with the rest of the form state.
+  const [locationFieldsKey, setLocationFieldsKey] = useState(0);
+
   // --- Fetch rules on component mount ---
   useEffect(() => {
     const fetchRules = async () => {
@@ -138,6 +142,24 @@ export default function TripForm({ onPlan, isLoading }) {
     onPlan(payload);
   };
 
+  const handleClear = () => {
+    if (isLoading) return;
+
+    setStartCoords(null);
+    setPickupCoords(null);
+    setDropoffCoords(null);
+    setStartTime(getLocalDateTimeString(new Date()));
+    setSelectedRuleId(rules.length > 0 ? rules[0].id : "");
+    setDriverName("");
+    setVehicleId("");
+    setCarrier("");
+    setMainOffice("");
+    setShippingDocs("");
+    setCoDriver("");
+    setErrors({});
+    setLocationFieldsKey((key) => key + 1);
+  };
+
   return (
     <form className="space-y-8" onSubmit={submit} noValidate>
       <h3 className="text-2xl font-extrabold text-center text-deep-saffron-600 tracking-tight font-serif">Plan Your Trip</h3>
@@ -147,15 +169,15 @@ export default function TripForm({ onPlan, isLoading }) {
         <div className="space-y-5">
             <div>
                 <label className="block text-sm font-semibold text-orange-800 mb-1">Start Location*</label>
-                <GeoSearchField onLocationSelect={setStartCoords} placeholder="Enter start location..." hasError={errors.startCoords} />
+                <GeoSearchField key={`start-${locationFieldsKey}`} onLocationSelect={setStartCoords} placeholder="Enter start location..." hasError={errors.startCoords} isDisabled={isLoading} />
             </div>
             <div>
                 <label className="block text-sm font-semibold text-orange-800 mb-1">Pickup Location*</label>
-                <GeoSearchField onLocationSelect={setPickupCoords} placeholder="Enter pickup location..." hasError={errors.pickupCoords} />
+                <GeoSearchField key={`pickup-${locationFieldsKey}`} onLocationSelect={setPickupCoords} placeholder="Enter pickup location..." hasError={errors.pickupCoords} isDisabled={isLoading} />
             </div>
             <div>
                 <label className="block text-sm font-semibold text-orange-800 mb-1">Dropoff Location*</label>
-                <GeoSearchField onLocationSelect={setDropoffCoords} placeholder="Enter dropoff location..." hasError={errors.dropoffCoords} />
+                <GeoSearchField key={`dropoff-${locationFieldsKey}`} onLocationSelect={setDropoffCoords} placeholder="Enter dropoff location..." hasError={errors.dropoffCoords} isDisabled={isLoading} />
             </div>
             <div>
                 <label className="block text-sm font-semibold text-orange-800 mb-1">Start Time</label>
@@ -165,6 +187,7 @@ export default function TripForm({ onPlan, isLoading }) {
                     value={startTime}
                     min={now}
                     onChange={(e) => setStartTime(e.target.value)}
+                    disabled={isLoading}
                 />
             </div>
         </div>
@@ -179,6 +202,7 @@ export default function TripForm({ onPlan, isLoading }) {
             value={selectedRuleId}
             onChange={(e) => setSelectedRuleId(e.target.value)}
             required
+            disabled={isLoading}
           >
             <option value="" disabled>Select a rule...</option>
             {rules.map((rule) => (
@@ -195,34 +219,42 @@ export default function TripForm({ onPlan, isLoading }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
                 <label className="block text-sm font-semibold text-orange-800 mb-1">Driver Name*</label>
-                <input className={`w-full p-3 text-base text-orange-900 bg-white border-2 rounded-lg focus:outline-none focus:ring-4 focus:ring-amber-flame-300 focus:border-amber-flame-500 transition duration-300 ${errors.driverName ? 'border-red-500' : 'border-orange-200'}`} type="text" value={driverName} onChange={e => setDriverName(e.target.value)} placeholder="e.g., John Doe" required />
+                <input className={`w-full p-3 text-base text-orange-900 bg-white border-2 rounded-lg focus:outline-none focus:ring-4 focus:ring-amber-flame-300 focus:border-amber-flame-500 transition duration-300 ${errors.driverName ? 'border-red-500' : 'border-orange-200'}`} type="text" value={driverName} onChange={e => setDriverName(e.target.value)} placeholder="e.g., John Doe" required disabled={isLoading} />
             </div>
             <div>
                 <label className="block text-sm font-semibold text-orange-800 mb-1">Vehicle No.*</label>
-                <input className={`w-full p-3 text-base text-orange-900 bg-white border-2 rounded-lg focus:outline-none focus:ring-4 focus:ring-amber-flame-300 focus:border-amber-flame-500 transition duration-300 ${errors.vehicleId ? 'border-red-500' : 'border-orange-200'}`} type="text" value={vehicleId} onChange={e => setVehicleId(e.target.value)} placeholder="e.g., TRK-501" required />
+                <input className={`w-full p-3 text-base text-orange-900 bg-white border-2 rounded-lg focus:outline-none focus:ring-4 focus:ring-amber-flame-300 focus:border-amber-flame-500 transition duration-300 ${errors.vehicleId ? 'border-red-500' : 'border-orange-200'}`} type="text" value={vehicleId} onChange={e => setVehicleId(e.target.value)} placeholder="e.g., TRK-501" required disabled={isLoading} />
             </div>
             <div>
                 <label className="block text-sm font-semibold text-orange-800 mb-1">Carrier*</label>
-                <input className={`w-full p-3 text-base text-orange-900 bg-white border-2 rounded-lg focus:outline-none focus:ring-4 focus:ring-amber-flame-300 focus:border-amber-flame-500 transition duration-300 ${errors.carrier ? 'border-red-500' : 'border-orange-200'}`} type="text" value={carrier} onChange={e => setCarrier(e.target.value)} placeholder="e.g., Swift Logistics" required />
+                <input className={`w-full p-3 text-base text-orange-900 bg-white border-2 rounded-lg focus:outline-none focus:ring-4 focus:ring-amber-flame-300 focus:border-amber-flame-500 transition duration-300 ${errors.carrier ? 'border-red-500' : 'border-orange-200'}`} type="text" value={carrier} onChange={e => setCarrier(e.target.value)} placeholder="e.g., Swift Logistics" required disabled={isLoading} />
             </div>
             <div>
                 <label className="block text-sm font-semibold text-orange-800 mb-1">Main Office*</label>
-                <input className={`w-full p-3 text-base text-orange-900 bg-white border-2 rounded-lg focus:outline-none focus:ring-4 focus:ring-amber-flame-300 focus:border-amber-flame-500 transition duration-300 ${errors.mainOffice ? 'border-red-500' : 'border-orange-200'}`} type="text" value={mainOffice} onChange={e => setMainOffice(e.target.value)} placeholder="e.g., Phoenix, AZ" required />
+                <input className={`w-full p-3 text-base text-orange-900 bg-white border-2 rounded-lg focus:outline-none focus:ring-4 focus:ring-amber-flame-300 focus:border-amber-flame-500 transition duration-300 ${errors.mainOffice ? 'border-red-500' : 'border-orange-200'}`} type="text" value={mainOffice} onChange={e => setMainOffice(e.target.value)} placeholder="e.g., Phoenix, AZ" required disabled={isLoading} />
             </div>
         </div>
         <div className="mt-5">
             <label className="block text-sm font-semibold text-orange-800 mb-1">Shipping Docs*</label>
-            <input className={`w-full p-3 text-base text-orange-900 bg-white border-2 rounded-lg focus:outline-none focus:ring-4 focus:ring-amber-flame-300 focus:border-amber-flame-500 transition duration-300 ${errors.shippingDocs ? 'border-red-500' : 'border-orange-200'}`} type="text" value={shippingDocs} onChange={e => setShippingDocs(e.target.value)} placeholder="e.g., BOL #12345, PO #67890" required />
+            <input className={`w-full p-3 text-base text-orange-900 bg-white border-2 rounded-lg focus:outline-none focus:ring-4 focus:ring-amber-flame-300 focus:border-amber-flame-500 transition duration-300 ${errors.shippingDocs ? 'border-red-500' : 'border-orange-200'}`} type="text" value={shippingDocs} onChange={e => setShippingDocs(e.target.value)} placeholder="e.g., BOL #12345, PO #67890" required disabled={isLoading} />
         </div>
         <div className="mt-5">
             <label className="block text-sm font-semibold text-orange-800 mb-1">Co-Driver (Optional)</label>
-            <input className="w-full p-3 text-base text-orange-900 bg-white border-2 border-orange-200 rounded-lg focus:outline-none focus:ring-4 focus:ring-amber-flame-300 focus:border-amber-flame-500 transition duration-300" type="text" value={coDriver} onChange={e => setCoDriver(e.target.value)} placeholder="e.g., Jane Smith" />
+            <input className="w-full p-3 text-base text-orange-900 bg-white border-2 border-orange-200 rounded-lg focus:outline-none focus:ring-4 focus:ring-amber-flame-300 focus:border-amber-flame-500 transition duration-300" type="text" value={coDriver} onChange={e => setCoDriver(e.target.value)} placeholder="e.g., Jane Smith" disabled={isLoading} />
         </div>
       </div>
 
-      <div className="text-center">
+      <div className="text-center flex flex-wrap justify-center items-center gap-4">
         <button className="py-3 px-16 text-xl font-serif font-bold rounded-lg mt-6 transition-all duration-300 ease-in-out bg-cayenne-red-600 text-white hover:bg-cayenne-red-500 focus:outline-none focus:ring-4 focus:ring-amber-flame-300 disabled:bg-gray-400 disabled:cursor-not-allowed transform hover:scale-105" type="submit" disabled={isLoading}>
             {isLoading ? <span className="animate-pulse">Loading...</span> : "🚚 Plan Trip"}
+        </button>
+        <button
+          className="py-3 px-10 text-xl font-serif font-bold rounded-lg mt-6 transition-all duration-300 ease-in-out bg-gray-200 text-orange-900 hover:bg-gray-300 focus:outline-none focus:ring-4 focus:ring-amber-flame-300 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+          type="button"
+          onClick={handleClear}
+          disabled={isLoading}
+        >
+            Clear
         </button>
       </div>
       {showLoadingMessage && <p className="text-center italic text-orange-600 mt-3 h-5">{loadingMessage}</p>}
