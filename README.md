@@ -44,7 +44,7 @@ cd truck-app
     ```bash
     cd truck-backend
     python -m venv venv
-    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+    source venv/bin/activate  # On Windows, use `venv\Scripts\activate` or on # bash, use `venv/Scripts/activate`
     ```
 
 2.  **Install dependencies:**
