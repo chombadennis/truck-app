@@ -59,10 +59,12 @@ const GeoSearchField = ({ onLocationSelect, placeholder, hasError }) => {
         return response.json();
       })
       .then((results) => {
-        // Filter out large administrative boundaries (like counties/states) which are often unroutable
-        const validResults = results.filter(
-          (r) => !(r.class === 'boundary' || r.type === 'administrative')
-        );
+        // Allow cities/towns even if they are administrative boundaries, but filter out large regions
+        const validResults = results.filter((r) => {
+          const isLargeRegion = r.addresstype === 'state' || r.addresstype === 'country' || r.addresstype === 'region';
+          const isLargeType = r.type === 'state' || r.type === 'country' || r.type === 'region';
+          return !isLargeRegion && !isLargeType;
+        });
         const newOptions = validResults.map((result) => ({
           value: {
             lat: parseFloat(result.lat),

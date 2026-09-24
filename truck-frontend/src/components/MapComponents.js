@@ -33,32 +33,32 @@ const redIcon = new L.Icon({
 });
 
 const Legend = () => {
-    const map = useMap();
-  
-    React.useEffect(() => {
-      const legend = L.control({ position: "bottomright" });
-  
-      legend.onAdd = () => {
-        const div = L.DomUtil.create("div", "info legend");
-        div.innerHTML = `
+  const map = useMap();
+
+  React.useEffect(() => {
+    const legend = L.control({ position: "bottomright" });
+
+    legend.onAdd = () => {
+      const div = L.DomUtil.create("div", "info legend");
+      div.innerHTML = `
             <h4>Legend</h4>
             <div><img src="https://maps.google.com/mapfiles/ms/icons/green-dot.png" alt="start" /> Start</div>
             <div><img src="https://maps.google.com/mapfiles/ms/icons/blue-dot.png" alt="pickup" /> Pickup</div>
             <div><img src="https://maps.google.com/mapfiles/ms/icons/red-dot.png" alt="dropoff" /> Dropoff</div>
             <div><div class="route-line"></div> Route</div>
         `;
-        return div;
-      };
-  
-      legend.addTo(map);
-  
-      return () => {
-        legend.remove();
-      };
-    }, [map]);
-  
-    return null;
-  };
+      return div;
+    };
+
+    legend.addTo(map);
+
+    return () => {
+      legend.remove();
+    };
+  }, [map]);
+
+  return null;
+};
 
 const FitBounds = ({ markers, polylinePositions }) => {
   const map = useMap();
