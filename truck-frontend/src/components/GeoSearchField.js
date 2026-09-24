@@ -23,8 +23,8 @@ const GeoSearchField = ({ onLocationSelect, placeholder, hasError, isDisabled })
       marginLeft: '2px',
     }),
     menuPortal: (provided) => ({
-        ...provided,
-        zIndex: 9999,
+      ...provided,
+      zIndex: 9999,
     }),
     menu: (provided) => ({
       ...provided,
